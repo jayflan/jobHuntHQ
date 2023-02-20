@@ -1,0 +1,41 @@
+body {
+
+}
+
+h1 {
+  color: dodgerblue
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-left: 1em;
+  
+}
+
+.container {
+  border-style: solid;
+  border-width: 1px;
+  border-color: dodgerblue;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+input {
+  margin: 3px;
+  width: 300px;
+}
+
+.seperate {
+  height: 1em;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  margin: 1em;
+}
+

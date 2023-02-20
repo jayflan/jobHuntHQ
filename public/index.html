@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css"/>
+  </head>
+  <body>
+    <h1>Testing for the Jobs Site</h1>
+    
+    <div class="container">
+      <form id="form">
+        <label for="searchList">Search Role List:</label>
+        <input type="text" id="searchList" name="searchList" placeholder="ex. software engineer, junior engineer" required/>
+        <label for="urlList">Url List:</label>
+        <input type="text" id="urlList" name="urlList" placeholder="ex. https://url.com, https://url.com" required/>
+        <span class="seperate"></span>
+        <input type="submit"/>
+        <!-- <input type="submit" onclick="handleForm()"/> -->
+      </form>
+      <div class="blank"></div>
+    </div>
+    <h2>Search Results Below:</h2>
+    <div id="output">
+    </div>
+
+  </body>
+    <script>
+    
+      // const searchArr = []
+      // const paramStr = window.location.search
+      // console.log(paramStr);
+      // const searchParams = new URLSearchParams(paramStr);
+      // console.log(searchParams);
+      // searchParams.forEach(currParam => {searchArr.push(currParam)});    
+
+      const handleForm = async(e) => {
+        e.preventDefault();
+        document.getElementById("output").innerHTML = 'Loading.....'
+        try {
+          const formData = new FormData((e.target))
+          const dataArr = [...formData.entries()];
+
+          const backEnd = await fetch('/api/jobs', 
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+              // 'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: JSON.stringify(dataArr)
+          });
+
+
+          const response = await backEnd.json();
+          
+          const output = `
+            <span>
+              ${Object.keys(response).map((currUrl) => {
+                return `
+                  <ul>
+                    <a href=${currUrl}>${currUrl}</a>
+                    ${response[currUrl].map((currJob) => {
+                      return `<li>${currJob}</li>`
+                    }).join('')}
+                  </ul>`
+              }).join('')}
+            </span>
+          `
+
+          document.getElementById("output").innerHTML = output
+          
+        } catch(err) {
+          console.log(err);
+        }
+      };
+      
+      const form = document.getElementById("form");
+      form.addEventListener('submit', handleForm);
+
+      
+      
+    
+
+
+
+
+
+
+
+    const testArr = ['TestOne', 'TestTwo', 'TestThree', 'TestFour']
+    const resultHtml = `
+      <ul>
+        ${testArr.map((currElem) => {
+          return '<li>'+currElem+'</li>'
+        }).join('')}
+      </ul>
+    `
+
+
+
+    </script>
+</html>
