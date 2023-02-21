@@ -3,7 +3,9 @@ body {
 }
 
 h1 {
-  color: dodgerblue
+  color: dodgerblue;
+  text-align: center;
+  
 }
 
 form {
@@ -14,12 +16,9 @@ form {
 }
 
 .container {
-  border-style: solid;
-  border-width: 1px;
-  border-color: dodgerblue;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 input {
