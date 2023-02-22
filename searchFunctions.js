@@ -33,18 +33,22 @@ const getJobsObj = (searchPhraseArr, urlObj) => {
             //traverse url/html
           $('a').each((i, e) => { // specifically targets <a> tags or an RSS Feed, if avail.
             const row = $(e).text();  //iterate over every html row/element
-            searchPhraseArr.forEach(elementPhrase => {
+            // use 'every' method to only push a row once, if a phrase match is found
+            searchPhraseArr.every(elementPhrase => {
                 //search for phrase in html
               const phraseFound = regExFindPhrase(elementPhrase, row);
               if(phraseFound) { // add found phrases to output
                   //if new phrase found, create 'url': [current elem]
                 if(!resultObj[elementUrl]) {
                   resultObj[elementUrl] = [row];
+                  return false;
                 } else{
                   const elementArr = resultObj[elementUrl];
                   elementArr.push(row);
+                  return false;
                 } 
-              }
+              };
+              return true;
             });
           });
 
