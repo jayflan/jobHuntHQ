@@ -1,5 +1,6 @@
-body {
 
+*, *:before, *:after {
+  box-sizing: border-box;
 }
 
 h1 {
@@ -9,24 +10,37 @@ h1 {
 }
 
 form {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  margin-left: 1em;
-  
+  padding: 1em;
 }
 
-.container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+/* input box formatting */
+
+input[type=submit] {
+  padding: 10px;
+  border: 0;
+  width: 50%;
+}
+
+input[type=text] {
+  padding: 10px;
+  border: 0;
+  box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.0);
 }
 
 input {
   margin: 3px;
-  width: 300px;
+  width: 100%;
+  border-radius: 2px;
 }
 
-.seperate {
+label {
+  margin-left: 0.5em;
+}
+
+.seperationSpan {
   height: 1em;
 }
 
@@ -38,3 +52,59 @@ li {
   margin: 1em;
 }
 
+div.page {
+  /* border-width: 0.1em;
+  border-style: solid;
+  border-color: dodgerblue; */
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 35%;
+}
+div.form-centered {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+
+/* Responsive Syling */
+
+/* For mobile phone: */ 
+[class*="container"] {
+  width: 90%;
+  border-radius: 10px;
+  background-color: lightgray;
+  box-shadow: 0 0 15px 4px rgba(0, 0, 0, .4);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+} 
+
+@media only screen and (min-width: 350px) {
+}
+
+@media only screen and (min-width: 600px) {
+  /* For tablet: */
+  div.container {
+    width: 75%;
+  }
+  
+}
+
+@media only screen and (min-width: 768px) {
+  /* For desktop: */
+  div.container {
+    width: 75%;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  /* For desktop: */
+  div.container {
+    width: 50%;
+  }
+}

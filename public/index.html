@@ -4,21 +4,23 @@
     <link rel="stylesheet" href="style.css"/>
   </head>
   <body>
-    <h1>Job Hunt HQ</h1>
     
-    <div class="container">
-      <form id="form">
-        <label for="searchList">Search Role List:</label>
-        <input type="text" id="searchList" name="searchList" placeholder="ex. software engineer, junior engineer" required/>
-        <label for="urlList">Url List:</label>
-        <input type="text" id="urlList" name="urlList" placeholder="ex. https://url.com, https://url.com" required/>
-        <span class="seperate"></span>
-        <input type="submit"/>
-        <!-- <input type="submit" onclick="handleForm()"/> -->
-      </form>
+    <div class="page">
+      <h1>Job Hunt HQ</h1>
+      <div class="container">
+        <form id="form">
+          <label for="searchList">Search Role List:</label>
+          <input type="text" id="searchList" name="searchList" placeholder="ex. software engineer, junior engineer" required/>
+          <label for="urlList">Url List:</label>
+          <input type="text" id="urlList" name="urlList" placeholder="ex. https://url.com, https://url.com" required/>
+          <span class="seperateSpan"></span>
+          <div class="form-centered">
+            <input type="submit"/>
+          </div>
+        </form>
+      </div>
       <div class="blank"></div>
     </div>
-    <h2>Search Results Below:</h2>
     <div id="output">
     </div>
 
@@ -55,9 +57,13 @@
           const output = `
             <span>
               ${Object.keys(response).map((currUrl) => {
+                //cleanup url for innerHTML
+                const urlObj = new URL(currUrl);
+                const shortUrl = urlObj.origin;
+                const betterUrl = currUrl.split('?');
                 return `
                   <ul>
-                    <a href=${currUrl}>${currUrl}</a>
+                    <a href=${currUrl}>${betterUrl[0]}</a>
                     ${response[currUrl].map((currJob) => {
                       return `<li>${currJob}</li>`
                     }).join('')}
