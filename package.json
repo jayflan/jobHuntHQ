@@ -4,6 +4,7 @@
   "description": "scrape website job pages",
   "main": "index.js",
   "scripts": {
+    "build": "node index.js",
     "start": "node index.js",
     "start-server": "nodemon server"
   },
