@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node index.js",
+    "build:prod": "node index.js",
     "start": "node index.js",
     "start-server": "nodemon server"
   },
