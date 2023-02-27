@@ -68,8 +68,8 @@
           const dataArr = [...formData.entries()];
           const serverlessUrl = "https://hfzbukzscd.execute-api.us-east-1.amazonaws.com/latest"
 
-          //const backEnd = await fetch('/api/jobs', <-- turned of if serverless-backend
-          const backEnd = await fetch(`${serverlessUrl}/api/jobs`, 
+          // const backEnd = await fetch('/api/jobs', //<-- turned of if using serverless-backend
+          const backEnd = await fetch(serverlessUrl + "/api/jobs", 
           {
             method: 'POST',
             headers: {

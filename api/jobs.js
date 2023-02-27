@@ -13,6 +13,7 @@ router.post("/", async(req, res, next) => {
       // convert payload array into 1 searchPhrase array & 1 url array
     const createNewArray = (payloadArr, arrElement) => {
       const newArr = [...payloadArr[arrElement][1].split(',')]
+      console.log(newArr)
       return newArr.map(currElem => currElem.trim());
     };
     const searchPhraseArr =  createNewArray(payload, 0);
