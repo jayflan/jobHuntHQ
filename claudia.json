@@ -1,0 +1,10 @@
+{
+  "lambda": {
+    "role": "findJobs-executor",
+    "name": "findJobs",
+    "region": "us-east-1"
+  },
+  "api": {
+    "id": "hfzbukzscd"
+  }
+}
