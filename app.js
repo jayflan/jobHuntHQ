@@ -1,35 +1,35 @@
-const { Cheerio, load } = require("cheerio");
+// const { Cheerio, load } = require("cheerio");
 const express = require("express");
-const morgan = require("morgan");
-const path = require("path");
-const axios = require('axios');
+// const morgan = require("morgan");
+// const path = require("path");
+// const axios = require('axios');
 
 const app = express();
 
 // middleware (logging & parsing)
-app.use(express.json({ limit: '5mb'}));
-app.use(express.urlencoded({
-  limit: '5mb',
-  extended: true,
-  }));
-app.use(morgan("dev"));
+// app.use(express.json({ limit: '5mb'}));
+// app.use(express.urlencoded({
+//   limit: '5mb',
+//   extended: true,
+//   }));
+// app.use(morgan("dev"));
 
 // static middleware
 
-  app.get("/", (req, res) => 
-    res.sendFile(path.join(__dirname, ".", "public/index.html"))
-  );
+  // app.get("/", (req, res) => 
+  //   res.sendFile(path.join(__dirname, ".", "public/index.html"))
+  // );
 
-  app.use(express.static(path.join(__dirname, ".", "public")));
+  // app.use(express.static(path.join(__dirname, ".", "public")));
 
 // api/router
 app.use("/api", require("./api"));
-//auth routes
+//*auth routes - Not used for jobHuntHQ app currently
   // app.use("/auth", require("./_auth"));
-//index html catch path (sends all other requests to there)
-  app.use("*", (req, res) => {
-    res.sendFile(path.join(__dirname, ".", "public/index.html"));
-  });
+//*index html catch path (sends all other requests to there) - not used if serverless/lambda
+  // app.use("*", (req, res) => {
+  //   res.sendFile(path.join(__dirname, ".", "public/index.html"));
+  // });
 
 // error handling endware
 app.use((req, res, next) => {
