@@ -1,7 +1,6 @@
 const router = require("express").Router();
-const axios = require("axios");
 const { getJobsObj, headlessBrowser } = require("../searchFunctions");
-require('dotenv').config();
+// require('dotenv').config();
 module.exports = router;
 
 const { htmlStickerMule, htmlCohere } = require('./testHTML');

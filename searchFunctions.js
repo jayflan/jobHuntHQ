@@ -1,6 +1,7 @@
 const { load } = require('cheerio');
 const puppeteer = require('puppeteer');
-
+const chromium = require('chrome-aws-lambda');
+const axios = require('axios');
 
 const getJobsObj = (searchPhraseArr, urlObj) => {
   //create resultObj: structure is -->
@@ -73,11 +74,19 @@ const getJobsObj = (searchPhraseArr, urlObj) => {
 
   //* currently using this func for scraping to help with sites using Javascript
 const headlessBrowser = async(url) => {
+  let browser = null;
   try {
-    const browser = await puppeteer.launch({
-      headless: true
+    browser = await chromium.puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
     });
     const page = await browser.newPage();
+
+    //testing navigation issues for serverless
+    // await page.setDefaultNavigationTimeout(60000);
 
     let errorArr = []; // for error output in place of html if url bad
     
