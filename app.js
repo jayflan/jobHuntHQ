@@ -1,8 +1,8 @@
 // const { Cheerio, load } = require("cheerio");
 const express = require("express");
-// const morgan = require("morgan");
-// const path = require("path");
-// const axios = require('axios');
+const morgan = require("morgan");
+const path = require("path");
+require('dotenv').config();
 
 const app = express();
 
@@ -12,24 +12,28 @@ app.use(express.urlencoded({
   limit: '5mb',
   extended: true,
   }));
-// app.use(morgan("dev"));
 
-// static middleware
-
-  // app.get("/", (req, res) => 
-  //   res.sendFile(path.join(__dirname, ".", "public/index.html"))
-  // );
-
-  // app.use(express.static(path.join(__dirname, ".", "public")));
-
-// api/router
+const awsLambda = process.env.SERVERLESS; // true or false setting
+if(awsLambda === "false") {
+  app.use(morgan("dev"));  
+    // static middleware
+  app.get("/", (req, res) => 
+    res.sendFile(path.join(__dirname, ".", "public/index.html"))
+  );
+  app.use(express.static(path.join(__dirname, ".", "public")));
+    //*index html catch path (sends all other requests to there) - not used if serverless/lambda
+};
+    
+  // api/router
 app.use("/api", require("./api"));
-//*auth routes - Not used for jobHuntHQ app currently
+  //*auth routes - Not used for jobHuntHQ app currently
   // app.use("/auth", require("./_auth"));
-//*index html catch path (sends all other requests to there) - not used if serverless/lambda
-  // app.use("*", (req, res) => {
-  //   res.sendFile(path.join(__dirname, ".", "public/index.html"));
-  // });
+  
+if(awsLambda === "false") {
+  app.use("*", (req, res) => {
+    res.sendFile(path.join(__dirname, ".", "public/index.html"));
+  });
+};
 
 // error handling endware
 app.use((req, res, next) => {

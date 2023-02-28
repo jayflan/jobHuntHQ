@@ -24,7 +24,7 @@
       <div class="blank"></div>
     </div>
     
-    </div>
+    <!-- </div> -->
 
     <!-- Modal -->
     <div  id="outputModal" class="modal">
@@ -66,7 +66,7 @@
         try {
           const formData = new FormData((e.target))
           const dataArr = [...formData.entries()];
-          const serverlessUrl = "https://hfzbukzscd.execute-api.us-east-1.amazonaws.com/latest"
+          const serverlessUrl = "https://hfzbukzscd.execute-api.us-east-1.amazonaws.com/latest";
 
           // const backEnd = await fetch('/api/jobs', //<-- turned of if using serverless-backend
           const backEnd = await fetch(serverlessUrl + "/api/jobs", 
