@@ -73,13 +73,15 @@
           {
             method: 'POST',
             headers: {
+              'Access-Control-Allow-Origin': '*',
               'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': "https://resilient-buttercream-2379bc.netlify.app"
-              // 'Content-Type': 'application/x-www-form-urlencoded'
+              // 'Host': 'https://resilient-buttercream-2379bc.netlify.app',
+              // 'Host': 'http://localhost:3000',
+              // 'Origin': "http://localhost:3000",
+              // 'Access-Control-Allow-Origin': "http://localhost:3000"
             },
             body: JSON.stringify(dataArr)
           });
-
 
           const response = await backEnd.json();
           

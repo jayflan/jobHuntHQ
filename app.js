@@ -13,6 +13,16 @@ app.use(express.urlencoded({
   extended: true,
   }));
 
+//cors middleware for serverless
+app.use((req, res, next) =>{
+  res.setHeader("Access-Control-Allow-Origin", "https://localhost:3000");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+    next();
+});
+
 const awsLambda = process.env.SERVERLESS; // true or false setting
 if(awsLambda === "false") {
   app.use(morgan("dev"));  
@@ -28,7 +38,7 @@ if(awsLambda === "false") {
 app.use("/api", require("./api"));
   //*auth routes - Not used for jobHuntHQ app currently
   // app.use("/auth", require("./_auth"));
-  
+
 if(awsLambda === "false") {
   app.use("*", (req, res) => {
     res.sendFile(path.join(__dirname, ".", "public/index.html"));
