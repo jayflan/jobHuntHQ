@@ -1,11 +1,11 @@
 const router = require("express").Router();
 require('dotenv').config();
 module.exports = router;
-const { handler } = require("../lambda");
+// const { handler } = require("../lambda");
 
 router.post("/", async(req, res, next) => {
   try{
-    console.log(handler())
+    // console.log(handler())
     res.send();
 
   } catch (err) {
