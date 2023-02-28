@@ -7,7 +7,7 @@
     "build": "node index.js",
     "build:prod": "node index.js",
     "start": "SERVERLESS=false node index.js",
-    "start:serverless": "node run claudia update",
+    "start-serverless": "node claudia update",
     "start-server": "SERVERLESS=false nodemon server"
   },
   "keywords": [],
