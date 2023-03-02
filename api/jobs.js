@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const { getJobsObj, headlessBrowser } = require("../searchFunctions");
-// require('dotenv').config();
 module.exports = router;
 
 const { htmlStickerMule, htmlCohere } = require('./testHTML');
@@ -20,8 +19,8 @@ router.post("/", async(req, res, next) => {
 
       //interation for promises via for loop
     const urlObj = {};
+    
     for(let i = 0; i < urlArr.length; i++) {
-
       const htmlData = async() => {
         try {
           const html = await headlessBrowser(urlArr[i]);

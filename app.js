@@ -1,18 +1,16 @@
-// const { Cheerio, load } = require("cheerio");
 const express = require("express");
-const morgan = require("morgan");
 const path = require("path");
 
 const app = express();
 
-// middleware (logging & parsing)
+  // middleware (parsing & local lambda/serverless dev)
 app.use(express.json({ limit: '5mb'}));
 app.use(express.urlencoded({
   limit: '5mb',
   extended: true,
   }));
 
-//cors middleware for serverless
+  //cors middleware for lambda/serverless
 app.use((req, res, next) =>{
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.header(
@@ -22,8 +20,13 @@ app.use((req, res, next) =>{
     next();
 });
 
+// api/router
+app.use("/api", require("./api"));
+
+  // lambda/serverless eval for local dev express server
 const awsLambda = process.env.SERVERLESS; // true or false setting
 if(awsLambda === "false") {
+  const morgan = require('morgan');
   app.use(morgan("dev"));  
     // static middleware
   app.get("/", (req, res) => 
@@ -33,10 +36,24 @@ if(awsLambda === "false") {
     //*index html catch path (sends all other requests to there) - not used if serverless/lambda
 };
     
-  // api/router
-app.use("/api", require("./api"));
-  //*auth routes - Not used for jobHuntHQ app currently
-  // app.use("/auth", require("./_auth"));
+  // local-lambda testing route
+// app.use('/lambda', async (res, req, next) =>{
+// 	console.log('Local Lambda route initiated')
+//   const result = await localLambda.execute({
+//     lambdaPath: path.join(__dirname, 'lambda.js'),
+//     lambdaHandler: handler,
+//     envfile: path.join(__dirname, '.env'),
+//     event: {
+//       headers: req.headers,
+//       body: req.body
+//     }
+//   });
+//   res
+//     // .status(result.statusCode)
+// 		.status(5000)
+//     .set(result.headers)
+//     .end(result.body)
+// });
 
 if(awsLambda === "false") {
   app.use("*", (req, res) => {
