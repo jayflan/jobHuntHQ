@@ -112,7 +112,21 @@
             const response = await searchResults.json();
             // console.log(response);
           
-          const output = `
+          
+          //url anchor-tag line-break formatting for output
+          const formatUrl = (url) => {
+            const doubleSlash = url.split('//');
+            const formatted = doubleSlash.map(str => 
+            //insert word breaks after colon & before various symbols
+              str
+                .replace(/(?<after>:)/giu, '$1<wbr>')
+                .replace(/(?<before>[/~.,\-_?#%])/giu, '<wbr>$1')
+                .replace(/(?<beforeAndAfter>[=&])/giu, '<wbr>$1<wbr')
+              );
+              return formatted[0] + '//' + formatted[1];
+          };
+          
+            const output = `
             <span>
               ${Object.keys(response).map((currUrl) => {
                 //cleanup url for innerHTML
@@ -121,7 +135,7 @@
                 const betterUrl = currUrl.split('?');
                 return `
                   <ul>
-                    <a href=${currUrl}>${betterUrl[0]}</a>
+                    <a href=${currUrl}>${formatUrl(betterUrl[0])}</a>
                     ${response[currUrl].map((currJob) => {
                       return `<li>${currJob}</li>`
                     }).join('')}

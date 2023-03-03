@@ -126,6 +126,10 @@ div.form-centered {
   cursor: pointer;
 }
 
+a {
+  inline-size: min-content;
+}
+
 
 
 /* Responsive Syling */
