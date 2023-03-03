@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const app = express();
+const cors = require('cors');
 
 // lambda/serverless eval for local dev express server
 const awsLambda = process.env.SERVERLESS; // true or false setting
@@ -43,15 +44,30 @@ app.use(express.urlencoded({
 }));
 
 //cors middleware for lambda/serverless
-app.use((req, res, next) =>{
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  // res.setHeader("Access-Control-Allow-Origin", "https://resilient-buttercream-2379bc.netlify.app");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-    );
-    next();
-  });
+// app.use((req, res, next) =>{
+//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+//   // res.setHeader("Access-Control-Allow-Origin", "https://resilient-buttercream-2379bc.netlify.app");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//     );
+//     next();
+//   });
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://resilient-buttercream-2379bc.netlify.app"
+];
+app.use(cors({
+  origin: function(origin, callback) {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not' +
+      'allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
   
   // api/router
   app.use("/api", require("./api"));

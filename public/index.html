@@ -76,6 +76,7 @@
             // scrape urls
           let urlObj = {}
           for(let i = 0; i < urlArr.length; i++) {
+            document.getElementById("output").innerHTML = `Processing Comapany Urls: ${i+1} of ${urlArr.length} `
             const urlScraped = await fetch(serverlessUrl + "/api/webscraper",
               {
                 method: 'POST',
@@ -89,6 +90,8 @@
               const response = await urlScraped.text();
               urlObj[urlArr[i]] = response;
           };
+
+          document.getElementById("output").innerHTML = "Finalizing Output";
 
           const scrapedUrlObj = await urlObj;
 
@@ -125,7 +128,6 @@
               }).join('')}
             </span>
           `
-
           document.getElementById("output").innerHTML = output;
           
         } catch(err) {
