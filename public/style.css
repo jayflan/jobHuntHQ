@@ -3,11 +3,22 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: "Oxygen";
+  src: url("Oxygen-Light.ttf");
+  font-display: swap;
+}
+
+body {
+  font-family: "Oxygen", "system-ui"; 
+}
+
 h1 {
   color: dodgerblue;
   text-align: center;
   
 }
+
 
 form {
   width: 100%;
@@ -65,6 +76,11 @@ li {
   margin: 1em;
 }
 
+span {
+  font-size: x-small;
+  padding-left: 1em;
+}
+
 div.page {
   /* border-width: 0.1em;
   border-style: solid;
@@ -81,6 +97,10 @@ div.form-centered {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+div.formSpacer {
+  height: 10px;
 }
 
 #output {
@@ -115,6 +135,7 @@ div.form-centered {
   border-radius: 2px;
   width: 100%;
   height: fit-content;
+  overflow-wrap: break-word;
 }
 /* Modal close button */
 .close {
