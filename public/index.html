@@ -81,7 +81,8 @@
                 method: 'POST',
                 headers: {
                   "Content-Type": "application/json",
-                  "Access-Control-Allow-Origin": "https://resilient-buttercream-2379bc.netlify.app*"
+                  "Access-Control-Allow-Origin": "http://localhost:3000"
+                  // "Access-Control-Allow-Origin": "https://resilient-buttercream-2379bc.netlify.app"
                 },
                 body: JSON.stringify({"urlStr": urlArr[i]})
               });
@@ -98,7 +99,8 @@
               method: 'POST',
               headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "https://resilient-buttercream-2379bc.netlify.app*"
+                "Access-Control-Allow-Origin": "http://localhost:3000"
+                // "Access-Control-Allow-Origin": "https://resilient-buttercream-2379bc.netlify.app"
               },
               body: JSON.stringify({searchArr: searchPhraseArr, scrapedUrlObj: scrapedUrlObj })
             });
