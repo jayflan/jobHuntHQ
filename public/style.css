@@ -75,7 +75,7 @@ div.page {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 35%;
+  margin-top: 5%;
 }
 div.form-centered {
   display: flex;
