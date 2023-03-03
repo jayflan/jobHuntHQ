@@ -38,14 +38,6 @@
 
   </body>
     <script>
-    
-      // const searchArr = []
-      // const paramStr = window.location.search
-      // console.log(paramStr);
-      // const searchParams = new URLSearchParams(paramStr);
-      // console.log(searchParams);
-      // searchParams.forEach(currParam => {searchArr.push(currParam)});    
-
         //Modal
       const modal = document.getElementById("outputModal");
       const btn = document.getElementById("modalBtn");
@@ -60,27 +52,58 @@
         modal.style.display = "none"; // close modal
       };
       
+
       const handleForm = async(e) => {
         e.preventDefault();
         document.getElementById("output").innerHTML = 'Loading.....'
         try {
           const formData = new FormData((e.target))
           const dataArr = [...formData.entries()];
-          // const serverlessUrl = "https://f6gkysgl2atxp2ykkyrbmfyjdy0eoaqf.lambda-url.us-east-1.on.aws"; // function url
+
+            // convert payload array into 1 searchPhrase array & 1 url array
+          const createNewArray = (payloadArr, arrElement) => {
+            const newArr = [...payloadArr[arrElement][1].split(',')]
+            return newArr.map(currElem => currElem.trim());
+          };
+          const searchPhraseArr =  createNewArray(dataArr, 0);
+          const urlArr = createNewArray(dataArr, 1);
+
           const serverlessUrl = "https://hfzbukzscd.execute-api.us-east-1.amazonaws.com/latest";  // aws API gateway url
-          // const serverlessUrl = "/lambda"; // direct-local path for aws function
+          // const serverlessUrl = "/lambda"; // direct-local path for aws function testing
+          // const serverlessUrl = "http://localhost:3000";
 
-          // const backEnd = await fetch('/api/jobs', //<-- turned of if using serverless-backend
-          const backEnd = await fetch(serverlessUrl + "/api/jobs", 
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataArr)
-          });
+          
+            // scrape urls
+          let urlObj = {}
+          for(let i = 0; i < urlArr.length; i++) {
+            const urlScraped = await fetch(serverlessUrl + "/api/webscraper",
+              {
+                method: 'POST',
+                headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "https://resilient-buttercream-2379bc.netlify.app"
+                },
+                body: JSON.stringify({"urlStr": urlArr[i]})
+              });
+              const response = await urlScraped.text();
+              urlObj[urlArr[i]] = response;
+          };
 
-          const response = await backEnd.json();
+          const scrapedUrlObj = await urlObj;
+
+
+            // search scraped urls for search phrases
+          const searchResults = await fetch(serverlessUrl + "/api/search", 
+            {
+              method: 'POST',
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({searchArr: searchPhraseArr, scrapedUrlObj: scrapedUrlObj })
+            });
+
+            const response = await searchResults.json();
+            // console.log(response);
           
           const output = `
             <span>
@@ -100,7 +123,7 @@
             </span>
           `
 
-          document.getElementById("output").innerHTML = output
+          document.getElementById("output").innerHTML = output;
           
         } catch(err) {
           console.log(err);
