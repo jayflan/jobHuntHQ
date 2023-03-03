@@ -12,9 +12,13 @@
         <form id="form">
           <label for="searchList">Search Role List:</label>
           <input type="text" id="searchList" name="searchList" placeholder="ex. software engineer, junior engineer" required/>
+          <span class="countSearch"></span>
+          <div class="formSpacer"></div>
           <label for="urlList">Url List:</label>
-          <input type="text" id="urlList" name="urlList" placeholder="ex. https://url.com, https://url.com" required/>
-          <span class="seperateSpan"></span>
+          <input type="text" id="urlList" name="urlList" placeholder="ex. https://url.com, https://url.com"  required/>
+          <span class="countUrls"></span>
+          <div class="formSpacer"></div>
+          <!-- <span class="seperateSpan"></span> -->
           <div class="form-centered">
             <button id="modalBtn">
               <input type="submit"/>
@@ -36,9 +40,12 @@
         </div>
       </div>
     </div>
-
   </body>
+    
+    
+    
     <script>
+
         //Modal
       const modal = document.getElementById("outputModal");
       const btn = document.getElementById("modalBtn");
@@ -54,6 +61,7 @@
       };
       
 
+      // Functions & Logic
       const handleForm = async(e) => {
         e.preventDefault();
         document.getElementById("output").innerHTML = 'Loading.....'
@@ -150,10 +158,28 @@
         }
       };
 
+      //Form information html
+      const formStringCount = (str) => {
+        return str.split(',').length;
+      };
 
-        //Form handling
+      const urlInputForm = document.getElementById("urlList");
+      urlInputForm.addEventListener("change", (e) => {
+        const html = document.getElementsByClassName("countUrls")
+        html[0].innerHTML = `Url Count: ${formStringCount(e.target.value)}`
+      });
+      
+      const searchInputForm = document.getElementById("searchList");
+      searchInputForm.addEventListener("change", (e) => {
+        const html = document.getElementsByClassName("countSearch")
+        html[0].innerHTML = `Search Phrase Count: ${formStringCount(e.target.value)}`
+      });
+
+      //Form handling
       const form = document.getElementById("form");
       form.addEventListener('submit', handleForm);
+
+        
 
     </script>
 </html>
