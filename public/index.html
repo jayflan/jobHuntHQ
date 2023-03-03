@@ -76,7 +76,7 @@
             // scrape urls
           let urlObj = {}
           for(let i = 0; i < urlArr.length; i++) {
-            document.getElementById("output").innerHTML = `Processing Comapany Urls: ${i+1} of ${urlArr.length} `
+            document.getElementById("output").innerHTML = `Processing Company Urls: ${i+1} of ${urlArr.length} `
             const urlScraped = await fetch(serverlessUrl + "/api/webscraper",
               {
                 method: 'POST',
