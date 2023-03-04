@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const cors = require('cors');
+require('dotenv').config();
 
 // lambda/serverless eval for local dev express server
 const awsLambda = process.env.SERVERLESS; // true or false setting
@@ -43,18 +44,12 @@ app.use(express.urlencoded({
   extended: true,
 }));
 
-//cors middleware for lambda/serverless
-// app.use((req, res, next) =>{
-//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-//   // res.setHeader("Access-Control-Allow-Origin", "https://resilient-buttercream-2379bc.netlify.app");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//     );
-//     next();
-//   });
+// CORS setup
+const port = process.env.PORT || 3000;
 const allowedOrigins = [
+  `http://localhost:${port}`,
   "http://localhost:3000",
+  "http://localhost",
   "https://resilient-buttercream-2379bc.netlify.app"
 ];
 app.use(cors({
