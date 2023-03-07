@@ -50,7 +50,7 @@ const allowedOrigins = [
   `http://localhost:${port}`,
   "http://localhost:3000",
   "http://localhost",
-  "https://resilient-buttercream-2379bc.netlify.app"
+  "https://jobhunt-hq.netlify.app"
 ];
 app.use(cors({
   origin: function(origin, callback) {
