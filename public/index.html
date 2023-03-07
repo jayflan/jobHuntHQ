@@ -29,8 +29,6 @@
       <div class="blank"></div>
     </div>
     
-    <!-- </div> -->
-
     <!-- Modal -->
     <div  id="outputModal" class="modal">
       <div class="modal-frame">
@@ -42,8 +40,6 @@
     </div>
   </body>
     
-    
-    
     <script>
 
         //Modal
@@ -53,7 +49,9 @@
       const span = document.getElementsByClassName("close")[0];
 
       btn.onclick = () => {
-        modal.style.display = "block"; // open modal
+        const inputSearchList = document.getElementById("searchList").value;
+        const inputUrlList = document.getElementById("urlList").value;
+        if(inputSearchList && inputUrlList) modal.style.display = "block"; // open modal
       };
 
       span.onclick = () => {
@@ -82,7 +80,7 @@
           // const serverlessUrl = "http://localhost:3000";
 
           
-            // scrape urls
+            // Scrape Urls
           let urlObj = {}
           for(let i = 0; i < urlArr.length; i++) {
             document.getElementById("output").innerHTML = `Processing Company Urls: ${i+1} of ${urlArr.length} `
@@ -91,10 +89,7 @@
                 method: 'POST',
                 headers: {
                   "Content-Type": "application/json",
-                  // "Access-Control-Request-Method": "POST",
-                  // "Access-Control-Request-Headers": "content-type",
                   "Access-Control-Allow-Origin": "http://localhost"
-                  // "Access-Control-Allow-Origin": "https://resilient-buttercream-2379bc.netlify.app"
                 },
                 body: JSON.stringify({"urlStr": urlArr[i]})
               });
@@ -114,8 +109,6 @@
               headers: {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "http://localhost",
-                // "Access-Control-Allow-Origin": "http://localhost:4000"
-                // "Access-Control-Allow-Origin": "https://resilient-buttercream-2379bc.netlify.app"
               },
               body: JSON.stringify({searchArr: searchPhraseArr, scrapedUrlObj: scrapedUrlObj })
             });
@@ -181,8 +174,6 @@
       //Form handling
       const form = document.getElementById("form");
       form.addEventListener('submit', handleForm);
-
-        
 
     </script>
 </html>
