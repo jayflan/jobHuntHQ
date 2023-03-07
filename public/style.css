@@ -16,9 +16,7 @@ body {
 h1 {
   color: dodgerblue;
   text-align: center;
-  
 }
-
 
 form {
   width: 100%;
@@ -82,9 +80,6 @@ span {
 }
 
 div.page {
-  /* border-width: 0.1em;
-  border-style: solid;
-  border-color: dodgerblue; */
   height: 100%;
   width: 100%;
   display: flex;
@@ -93,6 +88,7 @@ div.page {
   align-items: center;
   margin-top: 5%;
 }
+
 div.form-centered {
   display: flex;
   flex-direction: row;
@@ -120,6 +116,12 @@ div.formSpacer {
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
 }
+
+/* Modal Button */
+button:hover {
+  box-shadow: 0 0 15px 4px rgba(0, 0, 0, .2);
+}
+
 /* Modal Frame */
 .modal-frame {
   border-radius: 10px;
@@ -152,7 +154,6 @@ a {
 }
 
 
-
 /* Responsive Syling */
 
 /* For mobile phone: */ 
@@ -160,7 +161,7 @@ a {
   width: 90%;
   border-radius: 10px;
   background-color: lightgray;
-  box-shadow: 0 0 15px 4px rgba(0, 0, 0, .4);
+  box-shadow: 0 0 15px 4px rgba(0, 0, 0, .2);
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -177,7 +178,6 @@ a {
   div.container {
     width: 75%;
   }
-  
 }
 
 @media only screen and (min-width: 768px) {
