@@ -28,10 +28,12 @@
 - Search more than one site
 - Input multiple search phrases at one time
 - Input multiple company career-page urls at one time
+- Counts how many search / url entered into input fields
 - Output includes the link back to each career-page
 - Backend code setup for Node Server or AWS Lambda Serverless (AWS-Serverless-Express library)
 - AWS Lambda deploy/uploading simplified via ClaudiaJS library
 - Scraper waits for web-page Javascript output via the Puppeteer library
+- Mobile Responsive!
 
 ## How To Use
 
