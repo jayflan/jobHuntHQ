@@ -30,6 +30,7 @@
 - Input multiple company career-page urls at one time
 - Output includes the link back to each career-page
 - Backend code setup for Node Server or AWS Lambda Serverless (AWS-Serverless-Express library)
+- AWS Lambda deploy/uploading simplified via ClaudiaJS library
 - Scraper waits for web-page Javascript output via the Puppeteer library
 
 ## How To Use
@@ -37,4 +38,4 @@
 1. Fork and clone repo
 2. `npm install`
 3. Configure backend-code to use Node/Express or AWS-Lambda (Or convert to your flavor of serverless function)
-4. Start Node server for local operation
+4. `npm run start-server`
