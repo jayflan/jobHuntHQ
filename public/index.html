@@ -133,13 +133,16 @@
             const output = `
             <span>
               ${Object.keys(response).map((currUrl) => {
-                //cleanup url for innerHTML
-                const urlObj = new URL(currUrl);
-                const shortUrl = urlObj.origin;
-                const betterUrl = currUrl.split('?');
+                let outputUrlArr = [];  
+                //error check url
+                if(!currUrl) {
+                  outputUrlArr.push(["Bad Url Input: Please try again"]);
+                } else {
+                outputUrlArr.push(currUrl.split('?')); 
+                }
                 return `
                   <ul>
-                    <a href=${currUrl}>${formatUrl(betterUrl[0])}</a>
+                    <a href=${currUrl}>${formatUrl(outputUrlArr[0][0])}</a>
                     ${response[currUrl].map((currJob) => {
                       return `<li>${currJob}</li>`
                     }).join('')}
