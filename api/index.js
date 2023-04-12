@@ -1,8 +1,6 @@
 const router = require("express").Router();
 module.exports = router;
 
-// router.use("/jobs", require("./jobs"));
-router.use("/test", require("./test"));
 router.use("/webscraper", require("./webScraper"));
 router.use("/search", require("./search.js"));
 
