@@ -106,8 +106,8 @@ const headlessBrowser = async(url) => {
     });
     const page = await browser.newPage();
 
-    //testing navigation issues for serverless
-    // await page.setDefaultNavigationTimeout(60000);
+    //setting timeout to be less than AWS Gateway default of 30 secs
+    await page.setDefaultNavigationTimeout(25000);
 
     let errorArr = []; // for error output in place of html if url bad
     
