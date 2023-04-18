@@ -3,11 +3,17 @@ const chromium = require('chrome-aws-lambda');
 const axios = require('axios');
 const { load } = require('cheerio');
 
-//regEx helpter function
+//regEx helper function
 const regExFindPhrase = (string, html) => {
   const regex = new RegExp(`\\b${string}\\b`,"gi");
   const phraseFound = regex.test(html);
   return phraseFound; 
+};
+
+//job-posting string length helper function
+const evalInnerHtmlLength = (innerHtmlStr) => {
+  if(innerHtmlStr.length > 100) return "Description Very Long - Check Website"
+  if(innerHtmlStr.length <= 100) return innerHtmlStr;
 };
 
 const getJobsObj = (searchPhraseArr, urlArr) => {
@@ -37,29 +43,26 @@ const getJobsObj = (searchPhraseArr, urlArr) => {
               //load a url into cherrio load method)
               const $ = load(currHtml);
                 //traverse url/html
-              $('a').each((i, e) => { // specifically targets <a> tags or an RSS Feed, if avail.
+              $('a').each((i, e) => { // specifically targets <a> tags only
                 const rowInnerHtml = $(e).text();
-                const rowOuterHtml = $(e).prop('outerHTML');
                 //iterate over every html row/element
                   // use 'every' method to only push a row once, if a phrase match is found
                 searchPhraseArr.every(elementPhrase => {
-                    //search for phrase in html
+                  //search for phrase in html
                   const phraseFound = regExFindPhrase(elementPhrase, rowInnerHtml);
                   if(phraseFound) { // add found phrases to output
                       //if new phrase found, create 'url': [current elem]
-                        // also add paginated text if applies to url scrape
+                        // also add paginated text as > 1 htmlArr elem === website pager exists
                     if(htmlArr.length > 1 && !resultObj[elementUrl]) {
                       resultObj[elementUrl] = ["( Paginated Webpage )"];
-                      return false;
-                    } else if(!resultObj[elementUrl]) {
-                      resultObj[elementUrl] = [rowInnerHtml];
-                      return false;
                     };
-                    if(resultObj[elementUrl]) {
+                    if(!resultObj[elementUrl]) {
+                      resultObj[elementUrl] = [evalInnerHtmlLength(rowInnerHtml)];
+                    } else if(resultObj[elementUrl]) {
                       const elementArr = resultObj[elementUrl];
-                      elementArr.push(rowInnerHtml);
-                      return false;
+                      elementArr.push(evalInnerHtmlLength(rowInnerHtml));
                     };
+                    return false;
                   };
                   return true;
                 });
@@ -98,7 +101,7 @@ const headlessBrowser = async(url) => {
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath,
       headless: true,
-      // headless: chromium.headless, 
+      // headless: chromium.headless, //* turned off to test chromium library
       ignoreHTTPSErrors: true,
     });
     const page = await browser.newPage();
@@ -113,52 +116,96 @@ const headlessBrowser = async(url) => {
         errorArr.push(`Url Status: ${response.status()}`);
       };
     });
-
+    
     await page.goto(url, { waitUntil: 'networkidle0' });
-
-
-
-      //* Pagination Code / Currently Testing
+    
+    // for website with pagination
     const paginationBoolean = await page.$('.pagination');
     
     let htmlArr = [];
     
     if(paginationBoolean) {
       let pageNumber = 1;
+      
+      // to slowdown loop due to race-condition when loading JS-SPA page
+      const sleep = (milliseconds) => {
+        return new Promise(resolve => setTimeout(resolve, milliseconds)
+        )};
+        
         //iterate & scrape while a page has a 'next' link or button
       while (true) {
-        const pagerButtonsHtml = await page.$$eval('.pagination button', links => links.map(n => n.innerHTML));
+        
+        await sleep(2000);
+
+          // const origPageUrl = await page.url(); //* for if 'next' link remains at end of pager
+          // console.log('origPageUrl-->:', origPageUrl)
+          // eval if pagination using btns or anchor href elements
+        let pagerArr;
+          
+        const pagerButtonsHtml = await page.$$('.pagination button', links => links.map(n => n));
         const pagerAnchorLinks = await page.$$('.pagination a', links => links.map(n => n));
-        console.log(pagerAnchorLinks)
-          // scrape current page
+        
+        // prep pagerArr w/ html-element of either buttons or anchors or both
+        if(pagerButtonsHtml.length > 0 && pagerAnchorLinks.length > 0) {
+          pagerArr = pagerButtonsHtml;
+          pagerAnchorLinks.map(currElem => pagerArr.push(currElem));
+        } else if(pagerButtonsHtml.length > 0){
+          pagerArr = pagerButtonsHtml;
+        } else if(pagerAnchorLinks.length > 0) {
+          pagerArr = pagerAnchorLinks;
+        };
+        // scrape current page
         htmlArr.push(await page.content());
         console.log(`Scraping page ${pageNumber}`);
-          // func for finding next element  
-          const isNextElement = async(array) => {
-            for(let i = 0; i <= array.length; i++) {
-              const currElement = array[i];
-              if(currElement){
-                console.log('currElement-->', currElement);
-                const valueHandle = await currElement.getProperty('innerText');
-                const linkText = await valueHandle.jsonValue();
-                const foundNextLink = regExFindPhrase('next', linkText);  
-                if(foundNextLink) return currElement;
-              }
-            };
-              return undefined;
-          };
-          // look for element with 'next' text
-          const nextLink = await isNextElement(pagerAnchorLinks);
 
-          if(nextLink) {
-              await nextLink.click();
-              await page.waitForNavigation({ waitUntil: 'networkidle0' });
-              pageNumber++;
-          } else {
-            //stop while loop if no 'next' links on page
+        // func for finding next element  
+        const isNextElement = async(array) => {
+          if(!array) return undefined;
+          for(let i = 0; i <= array.length; i++) {
+            const currElement = array[i];
+            if(currElement){
+              const valueHandle = await currElement.getProperty('innerText');
+              const linkText = await valueHandle.jsonValue();
+              const foundNextLink = regExFindPhrase('next', linkText);  
+              if(foundNextLink) return currElement;
+            }
+          };
+          return undefined;
+        };
+        // look for element with 'next' text
+        const nextLink = await isNextElement(pagerArr);
+        // console.log('nextLink-->:', nextLink)
+          
+          //*testing for url change, if next link/btn doesn't go away in DOM
+          //* for if 'next' link remains at end of pager
+          // const isPageUrlSame = (url) => {
+            //   if(origPageUrl !== url) return false;
+            //   return true;
+            // };
+            
+        if(nextLink) {
+          try{
+            await Promise.all([
+              nextLink.click(), 
+              page.waitForNavigation({ waitUntil: 'networkidle0' })
+            ]);
+          } catch(error) {
+            console.log(error);
             break;
           };
-
+          //* for if 'next' link remains at end of pager
+          // const pageUrl = page.url();
+          // console.log('pageUrl-->', pageUrl)
+          //break while loop if new url matches current url (edge case)
+          // if(isPageUrlSame(pageUrl)) break;
+          
+          pageNumber++;
+          
+        } else {
+          //stop while loop if no 'next' links on page
+          break;
+        };
+            
       };
 
     } else {
