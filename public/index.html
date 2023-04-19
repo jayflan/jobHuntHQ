@@ -42,7 +42,8 @@
     
     <script>
 
-        //Modal
+      //Modal
+
       const modal = document.getElementById("outputModal");
       const btn = document.getElementById("modalBtn");
         //span element that closes modal
@@ -59,7 +60,47 @@
       };
       
 
-      // Functions & Logic
+      // Functions for Logic
+      
+      const createNewArray = (payloadArr, arrElement) => {
+        const newArr = [...payloadArr[arrElement][1].split(',')]
+        return newArr.map(currElem => currElem.trim());
+      };
+      
+        //helper func to fetch search api
+      const fetchSearchAPI =  async(searchPhraseArr, streamedUrlObj) => {
+          // search scraped urls for search phrases
+          const streamedResults = await fetch(serverlessUrl + "/api/search", 
+          {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "http://localhost",
+            },
+            body: JSON.stringify({searchArr: searchPhraseArr, scrapedUrlObj: streamedUrlObj })
+          });
+
+          return await streamedResults.json();
+      };
+
+      //url anchor-tag line-break formatting for output
+      const formatUrl = (url) => {
+            const doubleSlash = url.split('//');
+            const formatted = doubleSlash.map(str => 
+            //insert word breaks after colon & before various symbols
+              str
+                .replace(/(?<after>:)/giu, '$1<wbr>')
+                .replace(/(?<before>[/~.,\-_?#%])/giu, '<wbr>$1')
+                .replace(/(?<beforeAndAfter>[=&])/giu, '<wbr>$1<wbr')
+              );
+              return formatted[0] + '//' + formatted[1];
+          };
+
+
+      //Logic
+
+      require('dotenv').config();
+      
       const handleForm = async(e) => {
         e.preventDefault();
         document.getElementById("output").innerHTML = 'Loading.....'
@@ -67,14 +108,11 @@
           const formData = new FormData((e.target))
           const dataArr = [...formData.entries()];
 
-            // convert payload array into 1 searchPhrase array & 1 url array
-          const createNewArray = (payloadArr, arrElement) => {
-            const newArr = [...payloadArr[arrElement][1].split(',')]
-            return newArr.map(currElem => currElem.trim());
-          };
+          // convert payload array into 1 searchPhrase array & 1 url array
           const searchPhraseArr =  createNewArray(dataArr, 0);
           const urlArr = createNewArray(dataArr, 1);
 
+          console.log(process.env.SERVERLESS);
           const serverlessUrl = "https://hfzbukzscd.execute-api.us-east-1.amazonaws.com/latest";  // aws API gateway url
           // const serverlessUrl = "/lambda"; // direct-local path for aws function testing
           // const serverlessUrl = "http://localhost:4000";
@@ -96,44 +134,34 @@
               const responseArr = await urlScraped.json();
               // const responseArr = await urlScraped.text();
               urlObj[urlArr[i]] = responseArr;
-              
           };
 
           document.getElementById("output").innerHTML = "Finalizing Output";
 
+
           const scrapedUrlObj = await urlObj;
           const scrapedUrlObjKeyArr = Object.keys(scrapedUrlObj);
-          const copyScrapedUrlObj = Object.assign(scrapedUrlObj);
-
-            // search scraped urls for search phrases
-          const searchResults = await fetch(serverlessUrl + "/api/search", 
-            {
-              method: 'POST',
-              headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "http://localhost",
-              },
-              body: JSON.stringify({searchArr: searchPhraseArr, scrapedUrlObj: scrapedUrlObj })
-            });
-
-            const response = await searchResults.json();
+            // chunk/stream scrapedUrlObj data by 5 for search api (serverless function gateway)
+          const resultUrlObj = {};
+            // this let will be reasigned in the following for-loop
+          let streamedUrlObj = {};
           
-          //url anchor-tag line-break formatting for output
-          const formatUrl = (url) => {
-            const doubleSlash = url.split('//');
-            const formatted = doubleSlash.map(str => 
-            //insert word breaks after colon & before various symbols
-              str
-                .replace(/(?<after>:)/giu, '$1<wbr>')
-                .replace(/(?<before>[/~.,\-_?#%])/giu, '<wbr>$1')
-                .replace(/(?<beforeAndAfter>[=&])/giu, '<wbr>$1<wbr')
-              );
-              return formatted[0] + '//' + formatted[1];
+          for(let i = 0; i <= scrapedUrlObjKeyArr.length; i++) {
+            streamedUrlObj[scrapedUrlObjKeyArr[i]] = scrapedUrlObj[scrapedUrlObjKeyArr[i]];
+              //group dataObj into 5 or less and send to API
+            if(i % 5 === 0 || i === scrapedUrlObjKeyArr.length) {
+              const streamedResponse = await fetchSearchAPI(searchPhraseArr, streamedUrlObj);
+              //append streamedResponse to resultUrlObj for output
+              const streamedObjKeys = Object.keys(streamedResponse);
+              streamedObjKeys.forEach(currKey => resultUrlObj[currKey] = streamedResponse[currKey]);
+              streamedUrlObj = {};
+            };
           };
-          
+
             const output = `
             <span>
-              ${Object.keys(response).map((currUrl) => {
+              ${Object.keys(resultUrlObj).map((currUrl) => {
+                // ${Object.keys(response).map((currUrl) => {
                 let outputUrlArr = [];  
                 //error check url
                 if(!currUrl) {
@@ -144,7 +172,8 @@
                 return `
                   <ul>
                     <a href=${currUrl}>${formatUrl(outputUrlArr[0][0])}</a>
-                    ${response[currUrl].map((currJob) => {
+                    ${resultUrlObj[currUrl].map((currJob) => {
+                      // ${response[currUrl].map((currJob) => {
                       return `<li>${currJob}</li>`
                     }).join('')}
                   </ul>`
@@ -159,6 +188,7 @@
       };
 
       //Form information html
+
       const formStringCount = (str) => {
         return str.split(',').length;
       };

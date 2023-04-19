@@ -39,9 +39,9 @@ if(awsLambda === "false") {
 
 // middleware (parsing & local lambda/serverless dev)
 
-app.use(express.json({ limit: '50mb'}));
+app.use(express.json({ limit: '25mb'}));
 app.use(express.urlencoded({
-  limit: '50mb',
+  limit: '25mb',
   extended: true,
 }));
 
