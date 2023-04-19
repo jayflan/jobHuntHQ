@@ -68,7 +68,7 @@
       };
       
         //helper func to fetch search api
-      const fetchSearchAPI =  async(searchPhraseArr, streamedUrlObj) => {
+      const fetchSearchAPI =  async(serverlessUrl, searchPhraseArr, streamedUrlObj) => {
           // search scraped urls for search phrases
           const streamedResults = await fetch(serverlessUrl + "/api/search", 
           {
@@ -147,7 +147,7 @@
             streamedUrlObj[scrapedUrlObjKeyArr[i]] = scrapedUrlObj[scrapedUrlObjKeyArr[i]];
               //group dataObj into 5 or less and send to API
             if(i % 5 === 0 || i === scrapedUrlObjKeyArr.length) {
-              const streamedResponse = await fetchSearchAPI(searchPhraseArr, streamedUrlObj);
+              const streamedResponse = await fetchSearchAPI(serverlessUrl, searchPhraseArr, streamedUrlObj);
               //append streamedResponse to resultUrlObj for output
               const streamedObjKeys = Object.keys(streamedResponse);
               streamedObjKeys.forEach(currKey => resultUrlObj[currKey] = streamedResponse[currKey]);
